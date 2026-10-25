@@ -1,0 +1,58 @@
+<div class="bg-primary text-white py-4 mb-4">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-1">Tra Cứu Thông Tin Đặt Chỗ</h2>
+    <p class="text-white-50 mb-0">Kiểm tra trạng thái xác nhận và thông tin chuyến đi nhanh chóng</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+        <form action="/bookings/lookup" method="GET">
+          <label class="form-label fw-bold">Nhập Mã Đặt Chỗ (Ví dụ: BK123456...)</label>
+          <div class="input-group mb-3">
+            <input type="text" name="code" class="form-control form-control-lg text-uppercase" placeholder="Mã vé của bạn" value="<%= typeof searchCode !== 'undefined' ? searchCode : '' %>" required>
+            <button class="btn btn-primary px-4 fw-bold" type="submit">
+              <i class="fa-solid fa-search me-1"></i> Tra Cứu
+            </button>
+          </div>
+          <small class="text-muted">Mã đặt chỗ đã được gửi tới email và hiển thị tại màn hình sau khi hoàn tất đặt vé.</small>
+        </form>
+      </div>
+
+      <% if (searched) { %>
+        <% if (booking) { %>
+          <div class="card border-0 shadow-sm rounded-4 p-4 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0 text-success"><i class="fa-solid fa-circle-check me-2"></i>Tìm thấy đơn đặt chỗ</h5>
+              <span class="badge <%= booking.status === 'CONFIRMED' ? 'bg-success' : booking.status === 'CANCELLED' ? 'bg-danger' : 'bg-warning text-dark' %> px-3 py-2 fs-6">
+                <%= booking.status %>
+              </span>
+            </div>
+
+            <div class="mb-2"><strong>Mã booking:</strong> <span class="badge bg-primary"><%= booking.booking_code %></span></div>
+            <div class="mb-2"><strong>Tour:</strong> <%= booking.tour_title %> (<%= booking.destination %>)</div>
+            <div class="mb-2"><strong>Khách hàng:</strong> <%= booking.customer_name %> (<%= booking.customer_phone %>)</div>
+            <div class="mb-2"><strong>Ngày khởi hành:</strong> <%= formatDate(booking.departure_date) %></div>
+            <div class="mb-2"><strong>Số lượng khách:</strong> <%= booking.adults_count %> người lớn <%= booking.children_count ? `+ ${booking.children_count} trẻ em` : '' %></div>
+            <div class="mb-3"><strong>Tổng chi phí:</strong> <span class="text-danger fw-bold fs-5"><%= formatCurrency(booking.total_price) %></span></div>
+
+            <div class="d-flex gap-2">
+              <a href="/bookings/success/<%= booking.booking_code %>" class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-receipt me-1"></i> Xem chi tiết phiếu xác nhận
+              </a>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="alert alert-warning rounded-4 text-center p-4">
+            <i class="fa-solid fa-triangle-exclamation fs-3 mb-2 d-block"></i>
+            <h5>Không tìm thấy thông tin</h5>
+            <p class="mb-0 text-muted">Không tìm thấy đơn đặt tour tương ứng với mã <strong><%= searchCode %></strong>. Quý khách vui lòng kiểm tra lại mã hoặc liên hệ hotline 1900 6868.</p>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
+

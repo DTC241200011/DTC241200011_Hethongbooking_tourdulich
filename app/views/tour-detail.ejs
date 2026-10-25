@@ -1,0 +1,221 @@
+<!-- Tour Detail Banner -->
+<div class="position-relative text-white py-5 mb-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('<%= tour.image_url %>') center/cover no-repeat; min-height: 320px;">
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-lg-8">
+        <a href="/tours" class="text-white-50 text-decoration-none small mb-2 d-inline-block">
+          <i class="fa-solid fa-arrow-left me-1"></i> Quay lại danh sách tour
+        </a>
+        <div class="d-flex gap-2 mb-2">
+          <span class="badge bg-primary px-3 py-2"><i class="fa-solid fa-location-dot me-1"></i> <%= tour.destination %></span>
+          <span class="badge bg-warning text-dark px-3 py-2"><i class="fa-regular fa-clock me-1"></i> <%= tour.duration %></span>
+        </div>
+        <h1 class="display-5 fw-bold mb-3"><%= tour.title %></h1>
+        <p class="lead text-white-50"><%= tour.description %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-5">
+    <!-- Left Column: Tour Info & Itinerary -->
+    <div class="col-lg-7">
+      <!-- Quick Specs -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-light">
+        <h5 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-circle-info me-2"></i>Thông Tin Chuyến Đi</h5>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="fa-solid fa-map-pin text-primary fs-4 me-3"></i>
+              <div>
+                <small class="text-muted d-block">Điểm khởi hành</small>
+                <strong><%= tour.departure_location || 'Hà Nội / TP.HCM' %></strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="fa-solid fa-van-shuttle text-primary fs-4 me-3"></i>
+              <div>
+                <small class="text-muted d-block">Phương tiện di chuyển</small>
+                <strong><%= tour.transport || 'Xe du lịch cao cấp' %></strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="fa-solid fa-users text-primary fs-4 me-3"></i>
+              <div>
+                <small class="text-muted d-block">Quy mô đoàn</small>
+                <strong>Tối đa <%= tour.max_participants %> khách</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="d-flex align-items-center">
+              <i class="fa-solid fa-shield-heart text-primary fs-4 me-3"></i>
+              <div>
+                <small class="text-muted d-block">Bảo hiểm du lịch</small>
+                <strong class="text-success">Mức đền bù 100.000.000đ</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Itinerary Section -->
+      <h4 class="fw-bold mb-4 text-dark"><i class="fa-solid fa-calendar-days me-2 text-primary"></i>Lịch Trình Chi Tiết</h4>
+      <% if (tour.itinerary && tour.itinerary.length > 0) { %>
+        <div class="itinerary-timeline">
+          <% tour.itinerary.forEach((item, index) => { %>
+            <div class="card border-0 shadow-sm rounded-4 mb-3 p-4 border-start border-4 border-primary">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill">
+                  Ngày <%= item.day_number %>
+                </span>
+                <% if (item.meals) { %>
+                  <span class="badge bg-secondary-subtle text-secondary small">
+                    <i class="fa-solid fa-utensils me-1"></i> <%= item.meals %>
+                  </span>
+                <% } %>
+              </div>
+              <h5 class="fw-bold text-dark mb-2"><%= item.title %></h5>
+              <p class="text-muted mb-0" style="white-space: pre-line;"><%= item.description %></p>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="alert alert-info rounded-4">
+          <i class="fa-solid fa-info-circle me-2"></i> Lịch trình chi tiết đang được cập nhật. Quý khách vui lòng liên hệ hotline 1900 6868 để nhận tài liệu tour chi tiết.
+        </div>
+      <% } %>
+
+      <!-- Policy Info -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+        <h5 class="fw-bold mb-3"><i class="fa-solid fa-list-check text-success me-2"></i>Giá Tour Bao Gồm & Không Bao Gồm</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <h6 class="text-success fw-bold"><i class="fa-solid fa-check me-1"></i> Bao gồm:</h6>
+            <ul class="small text-muted ps-3 mb-0">
+              <li>Xe ô tô đời mới máy lạnh suốt tuyến</li>
+              <li>Khách sạn tiện nghi tiêu chuẩn 3-5 sao</li>
+              <li>Các bữa ăn theo chương trình chi tiết</li>
+              <li>Vé tham quan các điểm trong lịch trình</li>
+              <li>Hướng dẫn viên kinh nghiệm, nhiệt tình</li>
+              <li>Bảo hiểm du lịch, nước suối 1 chai/ngày</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-danger fw-bold"><i class="fa-solid fa-xmark me-1"></i> Không bao gồm:</h6>
+            <ul class="small text-muted ps-3 mb-0">
+              <li>Chi phí cá nhân (giặt ủi, điện thoại...)</li>
+              <li>Đồ uống trong các bữa ăn</li>
+              <li>Tiền Tip cho HDV và tài xế</li>
+              <li>Thuế VAT (khi xuất hóa đơn)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Booking Form -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-lg rounded-4 p-4 sticky-top" style="top: 80px;">
+        <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
+          <div>
+            <span class="text-muted small">Giá tour / 1 khách lớn</span>
+            <div class="text-danger fw-bold fs-3" id="tourPriceDisplay" data-price="<%= tour.price %>">
+              <%= formatCurrency(tour.price) %>
+            </div>
+          </div>
+          <span class="badge bg-success-subtle text-success px-3 py-2 border border-success">
+            <i class="fa-solid fa-bolt me-1"></i> Giữ chỗ ngay
+          </span>
+        </div>
+
+        <h5 class="fw-bold mb-3 text-dark">Đặt Tour Trực Tuyến</h5>
+        
+        <form action="/bookings/create" method="POST" id="bookingForm">
+          <input type="hidden" name="tour_id" value="<%= tour.id %>">
+          
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Họ và tên quý khách <span class="text-danger">*</span></label>
+            <input type="text" name="customer_name" class="form-control" placeholder="Nguyễn Văn A" required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+              <input type="tel" name="customer_phone" class="form-control" placeholder="0912345678" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Email liên hệ <span class="text-danger">*</span></label>
+              <input type="email" name="customer_email" class="form-control" placeholder="email@domain.com" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Ngày dự kiến khởi hành <span class="text-danger">*</span></label>
+            <input type="date" name="departure_date" class="form-control" id="departureDate" required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Người lớn (>11t)</label>
+              <select name="adults_count" id="adultsCount" class="form-select">
+                <option value="1">1 khách</option>
+                <option value="2" selected>2 khách</option>
+                <option value="3">3 khách</option>
+                <option value="4">4 khách</option>
+                <option value="5">5 khách</option>
+                <option value="6">6 khách</option>
+                <option value="8">8 khách</option>
+                <option value="10">10 khách</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-semibold">Trẻ em (5-11t: 70%)</label>
+              <select name="children_count" id="childrenCount" class="form-select">
+                <option value="0" selected>0 trẻ em</option>
+                <option value="1">1 trẻ em</option>
+                <option value="2">2 trẻ em</option>
+                <option value="3">3 trẻ em</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Yêu cầu đặc biệt (Ghi chú)</label>
+            <textarea name="notes" class="form-control" rows="2" placeholder="Yêu cầu ăn chay, phòng gia đình, ghế đầu..."></textarea>
+          </div>
+
+          <!-- Total Price Preview -->
+          <div class="bg-light p-3 rounded-3 mb-4 border">
+            <div class="d-flex justify-content-between text-muted small mb-1">
+              <span>Tạm tính người lớn:</span>
+              <span id="adultTotalPreview">0 đ</span>
+            </div>
+            <div class="d-flex justify-content-between text-muted small mb-2">
+              <span>Tạm tính trẻ em:</span>
+              <span id="childTotalPreview">0 đ</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span class="fw-bold">TỔNG TIỀN DỰ KIẾN:</span>
+              <span class="text-danger fw-bold fs-4" id="grandTotalPreview">0 đ</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-warning w-100 py-3 fw-bold text-dark fs-5 rounded-3 shadow">
+            <i class="fa-solid fa-credit-card me-2"></i>Xác Nhận Đặt Tour
+          </button>
+          
+          <div class="text-center text-muted small mt-2">
+            <i class="fa-solid fa-lock me-1"></i> Thông tin được mã hóa bảo mật SSL
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

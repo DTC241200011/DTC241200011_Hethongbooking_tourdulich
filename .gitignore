@@ -1,0 +1,23 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+
+# Environment files
+.env
+
+# Database and persistent storage
+postgres_data/
+pgadmin_data/
+prom_data/
+grafana_data/
+loki_data/
+
+# SSL private keys (for production)
+nginx/ssl/*.key
+nginx/ssl/*.pem
+
+# OS generated
+.DS_Store
+Thumbs.db
+*.log
+

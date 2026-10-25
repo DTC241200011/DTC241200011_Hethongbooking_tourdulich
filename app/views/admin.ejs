@@ -1,0 +1,254 @@
+<div class="bg-dark text-white py-4 mb-4">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="fw-bold mb-1"><i class="fa-solid fa-sliders me-2 text-primary"></i>Quản Trị Hệ Thống Booking Tour</h2>
+      <p class="text-white-50 mb-0">Quản lý tour du lịch, duyệt đơn đặt tour và giám sát vận hành</p>
+    </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTourModal">
+      <i class="fa-solid fa-plus me-1"></i> Thêm Tour Mới
+    </button>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <!-- Top Stat Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-3 bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="small text-white-50">Tour Đang Bán</div>
+            <div class="fs-2 fw-bold"><%= stats.activeTours %></div>
+          </div>
+          <i class="fa-solid fa-map-location-dot fs-1 text-white-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-3 bg-success text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="small text-white-50">Tổng Đơn Đặt Tour</div>
+            <div class="fs-2 fw-bold"><%= stats.totalBookings %></div>
+          </div>
+          <i class="fa-solid fa-ticket fs-1 text-white-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-3 bg-warning text-dark">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="small text-muted">Chờ Duyệt (Pending)</div>
+            <div class="fs-2 fw-bold"><%= stats.pendingBookings %></div>
+          </div>
+          <i class="fa-regular fa-clock fs-1 text-black-50"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm rounded-4 p-3 bg-info text-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="small text-white-50">Doanh Thu Dự Kiến</div>
+            <div class="fs-3 fw-bold"><%= formatCurrency(stats.totalRevenue) %></div>
+          </div>
+          <i class="fa-solid fa-money-bill-trend-up fs-1 text-white-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs nav-fill mb-4" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active fw-bold" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings-pane" type="button" role="tab">
+        <i class="fa-solid fa-list-check me-2"></i> Danh Sách Đặt Tour (<%= bookings.length %>)
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link fw-bold" id="tours-tab" data-bs-toggle="tab" data-bs-target="#tours-pane" type="button" role="tab">
+        <i class="fa-solid fa-mountain-sun me-2"></i> Danh Mục Tour (<%= tours.length %>)
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content" id="adminTabContent">
+    <!-- Bookings Tab -->
+    <div class="tab-pane fade show active" id="bookings-pane" role="tabpanel">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Mã Đơn</th>
+                <th>Khách Hàng</th>
+                <th>Tour Đặt</th>
+                <th>Khởi Hành</th>
+                <th>Số Khách</th>
+                <th>Tổng Tiền</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (bookings && bookings.length > 0) { %>
+                <% bookings.forEach(b => { %>
+                  <tr id="booking-row-<%= b.id %>">
+                    <td><span class="badge bg-secondary font-monospace"><%= b.booking_code %></span></td>
+                    <td>
+                      <div class="fw-bold"><%= b.customer_name %></div>
+                      <small class="text-muted"><%= b.customer_phone %> | <%= b.customer_email %></small>
+                    </td>
+                    <td>
+                      <div class="fw-semibold text-truncate" style="max-width: 200px;"><%= b.tour_title %></div>
+                      <small class="text-muted"><%= b.destination %></small>
+                    </td>
+                    <td><%= formatDate(b.departure_date) %></td>
+                    <td><%= b.adults_count %> lớn <%= b.children_count ? `+ ${b.children_count} bé` : '' %></td>
+                    <td class="text-danger fw-bold"><%= formatCurrency(b.total_price) %></td>
+                    <td>
+                      <select class="form-select form-select-sm status-select" data-id="<%= b.id %>" style="width: 130px;">
+                        <option value="PENDING" <%= b.status === 'PENDING' ? 'selected' : '' %>>Chờ duyệt</option>
+                        <option value="CONFIRMED" <%= b.status === 'CONFIRMED' ? 'selected' : '' %>>Đã xác nhận</option>
+                        <option value="CANCELLED" <%= b.status === 'CANCELLED' ? 'selected' : '' %>>Đã hủy</option>
+                      </select>
+                    </td>
+                    <td>
+                      <a href="/bookings/success/<%= b.booking_code %>" target="_blank" class="btn btn-outline-info btn-sm" title="Xem phiếu xác nhận">
+                        <i class="fa-solid fa-eye"></i>
+                      </a>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="8" class="text-center py-4 text-muted">Chưa có đơn đặt tour nào trong hệ thống.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tours Tab -->
+    <div class="tab-pane fade" id="tours-pane" role="tabpanel">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Ảnh</th>
+                <th>Tên Tour</th>
+                <th>Điểm Đến</th>
+                <th>Thời Gian</th>
+                <th>Giá Bán</th>
+                <th>Quy Mô</th>
+                <th>Nổi Bật</th>
+                <th>Hành Động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% tours.forEach(t => { %>
+                <tr id="tour-row-<%= t.id %>">
+                  <td>
+                    <img src="<%= t.image_url %>" class="rounded-3" style="width: 60px; height: 45px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100'">
+                  </td>
+                  <td>
+                    <div class="fw-bold"><a href="/tours/<%= t.id %>" class="text-decoration-none text-dark" target="_blank"><%= t.title %></a></div>
+                    <small class="text-muted"><%= t.transport || 'Xe/Máy bay' %></small>
+                  </td>
+                  <td><span class="badge bg-primary-subtle text-primary"><%= t.destination %></span></td>
+                  <td><%= t.duration %></td>
+                  <td class="text-danger fw-bold"><%= formatCurrency(t.price) %></td>
+                  <td><%= t.max_participants %> chỗ</td>
+                  <td>
+                    <% if (t.featured) { %>
+                      <span class="badge bg-danger">HOT</span>
+                    <% } else { %>
+                      <span class="badge bg-light text-muted border">Thường</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-danger btn-sm delete-tour-btn" data-id="<%= t.id %>" data-title="<%= t.title %>">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Thêm Tour Mới -->
+<div class="modal fade" id="addTourModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4 border-0">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold"><i class="fa-solid fa-plus me-2"></i>Thêm Mới Tour Du Lịch</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="createTourForm">
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tên Tour Du Lịch <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control" required placeholder="Ví dụ: Tour Đà Nẵng - Hội An - Bà Nà Hills 4N3Đ">
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Điểm Đến <span class="text-danger">*</span></label>
+              <input type="text" name="destination" class="form-control" required placeholder="Đà Nẵng, Phú Quốc, Hạ Long...">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Thời Gian <span class="text-danger">*</span></label>
+              <input type="text" name="duration" class="form-control" required placeholder="3 Ngày 2 Đêm, 4N3Đ...">
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Giá Tour (VNĐ) <span class="text-danger">*</span></label>
+              <input type="number" name="price" class="form-control" required placeholder="4500000" min="0">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Số Chỗ Tối Đa</label>
+              <input type="number" name="max_participants" class="form-control" value="30">
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Điểm Khởi Hành</label>
+              <input type="text" name="departure_location" class="form-control" value="Hà Nội / TP.HCM">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Phương Tiện</label>
+              <input type="text" name="transport" class="form-control" value="Xe du lịch đời mới / Máy bay">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Link Ảnh Bìa (URL)</label>
+            <input type="url" name="image_url" class="form-control" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Mô Tả Ngắn</label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Giới thiệu điểm nhấn của tour..."></textarea>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="featured" id="featuredCheck">
+            <label class="form-check-label" for="featuredCheck">Đánh dấu là Tour Nổi Bật (Featured)</label>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-primary fw-bold px-4">Lưu Tour Mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

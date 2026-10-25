@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="980" viewBox="0 0 1480 980" role="img" aria-labelledby="title description">
+  <title id="title">Sơ đồ kiến trúc tổng thể các container VietTour</title>
+  <desc id="description">Sơ đồ 11 container VietTour, các luồng ứng dụng, giám sát, logging và phân vùng mạng Docker.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#52657a"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7c3aed"/>
+    </marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #172033; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #52657a; }
+      .section { font-size: 16px; font-weight: 700; letter-spacing: .4px; }
+      .name { font-size: 16px; font-weight: 700; }
+      .detail { font-size: 13px; fill: #52657a; }
+      .network { font-size: 12px; font-weight: 700; }
+      .tiny { font-size: 12px; fill: #52657a; }
+      .card { stroke-width: 2; rx: 12; }
+      .flow { fill: none; stroke: #52657a; stroke-width: 2.5; marker-end: url(#arrow); }
+      .metric { fill: none; stroke: #2563eb; stroke-width: 2.2; marker-end: url(#arrowBlue); }
+      .logflow { fill: none; stroke: #7c3aed; stroke-width: 2.2; marker-end: url(#arrowPurple); }
+      .dashed { stroke-dasharray: 7 6; }
+    </style>
+  </defs>
+
+  <rect width="1480" height="980" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">Kiến trúc tổng thể Container VietTour</text>
+  <text x="48" y="86" class="subtitle">Docker Compose · 11 container · 4 mạng ảo · PostgreSQL được cô lập khỏi mạng ngoài</text>
+
+  <text x="48" y="132" class="section">LUỒNG ỨNG DỤNG VÀ QUẢN TRỊ</text>
+
+  <rect x="48" y="158" width="180" height="116" rx="12" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="68" y="190" class="name">Người dùng</text>
+  <text x="68" y="215" class="detail">Trình duyệt</text>
+  <text x="68" y="242" class="network">HTTP / HTTPS</text>
+
+  <rect x="295" y="158" width="250" height="116" class="card" fill="#fff7ed" stroke="#f97316"/>
+  <text x="315" y="190" class="name">tour_nginx_proxy</text>
+  <text x="315" y="215" class="detail">Nginx · TLS · reverse proxy</text>
+  <text x="315" y="242" class="network" fill="#c2410c">Host: 8080, 8443 · frontend · monitoring</text>
+
+  <rect x="625" y="158" width="250" height="116" class="card" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="645" y="190" class="name">tour_web_app</text>
+  <text x="645" y="215" class="detail">Node.js 20 · Express · /metrics</text>
+  <text x="645" y="242" class="network" fill="#1d4ed8">frontend · backend · monitoring</text>
+
+  <rect x="955" y="158" width="230" height="116" class="card" fill="#f0fdf4" stroke="#22c55e"/>
+  <text x="975" y="190" class="name">tour_postgres</text>
+  <text x="975" y="215" class="detail">PostgreSQL 16 · volume</text>
+  <text x="975" y="242" class="network" fill="#15803d">backend · admin</text>
+
+  <rect x="1240" y="158" width="200" height="116" class="card" fill="#fdf4ff" stroke="#c026d3"/>
+  <text x="1260" y="190" class="name">tour_pgadmin</text>
+  <text x="1260" y="215" class="detail">Quản trị PostgreSQL</text>
+  <text x="1260" y="242" class="network" fill="#a21caf">Host: 5050 · frontend · admin</text>
+
+  <path d="M228 216 H287" class="flow"/>
+  <path d="M545 216 H617" class="flow"/>
+  <text x="551" y="198" class="tiny">proxy :3000</text>
+  <path d="M875 216 H947" class="flow"/>
+  <text x="882" y="198" class="tiny">SQL :5432</text>
+  <path d="M420 281 C560 338 1115 338 1245 281" class="flow"/>
+  <text x="760" y="329" class="tiny">/pgadmin/ qua Nginx</text>
+  <path d="M1340 281 V374 H1070 V281" class="flow"/>
+  <text x="1120" y="365" class="tiny">kết nối quản trị :5432</text>
+
+  <rect x="48" y="397" width="1384" height="535" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="72" y="435" class="section" fill="#5b21b6">GIÁM SÁT VÀ LOG TẬP TRUNG · monitoring_net</text>
+
+  <rect x="100" y="480" width="260" height="112" class="card" fill="#fff" stroke="#6366f1"/>
+  <text x="120" y="512" class="name">tour_prometheus</text>
+  <text x="120" y="537" class="detail">Scrape mỗi 10 giây</text>
+  <text x="120" y="562" class="network" fill="#4338ca">Host: 9090 · monitoring</text>
+
+  <rect x="430" y="480" width="260" height="112" class="card" fill="#fff" stroke="#f59e0b"/>
+  <text x="450" y="512" class="name">tour_grafana</text>
+  <text x="450" y="537" class="detail">Dashboard metrics và logs</text>
+  <text x="450" y="562" class="network" fill="#b45309">Host: 3001 · frontend · monitoring</text>
+
+  <rect x="760" y="480" width="260" height="112" class="card" fill="#fff" stroke="#ec4899"/>
+  <text x="780" y="512" class="name">tour_loki</text>
+  <text x="780" y="537" class="detail">Lưu trữ log · API :3100</text>
+  <text x="780" y="562" class="network" fill="#be185d">Host: 3100 · monitoring</text>
+
+  <rect x="1090" y="480" width="260" height="112" class="card" fill="#fff" stroke="#8b5cf6"/>
+  <text x="1110" y="512" class="name">tour_promtail</text>
+  <text x="1110" y="537" class="detail">Thu thập Docker và Nginx logs</text>
+  <text x="1110" y="562" class="network" fill="#6d28d9">monitoring_net</text>
+
+  <path d="M430 520 H368" class="metric"/>
+  <text x="371" y="504" class="tiny">query metrics</text>
+  <path d="M690 540 H752" class="metric"/>
+  <text x="693" y="523" class="tiny">query logs</text>
+  <path d="M1090 556 H1028" class="logflow"/>
+  <text x="1032" y="541" class="tiny">push logs</text>
+
+  <rect x="100" y="690" width="260" height="112" class="card" fill="#fff" stroke="#0ea5e9"/>
+  <text x="120" y="722" class="name">tour_postgres_exporter</text>
+  <text x="120" y="747" class="detail">Metric PostgreSQL · :9187</text>
+  <text x="120" y="772" class="network" fill="#0369a1">backend · monitoring</text>
+
+  <rect x="430" y="690" width="260" height="112" class="card" fill="#fff" stroke="#0ea5e9"/>
+  <text x="450" y="722" class="name">tour_nginx_exporter</text>
+  <text x="450" y="747" class="detail">Metric Nginx · :9113</text>
+  <text x="450" y="772" class="network" fill="#0369a1">frontend · monitoring</text>
+
+  <rect x="760" y="690" width="260" height="112" class="card" fill="#fff" stroke="#0ea5e9"/>
+  <text x="780" y="722" class="name">tour_cadvisor</text>
+  <text x="780" y="747" class="detail">Tài nguyên container · :8080</text>
+  <text x="780" y="772" class="network" fill="#0369a1">monitoring_net</text>
+
+  <path d="M230 690 V610 H190 V600" class="metric"/>
+  <path d="M560 690 V625 H280 V600" class="metric"/>
+  <path d="M890 690 V642 H330 V600" class="metric"/>
+  <path d="M750 274 V455 H350 V472" class="metric"/>
+  <text x="425" y="449" class="tiny">scrape /metrics</text>
+  <text x="115" y="838" class="tiny">Prometheus scrape: web-app, exporters, cAdvisor và chính Prometheus</text>
+
+  <rect x="48" y="900" width="16" height="16" rx="4" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="72" y="913" class="tiny">frontend_net</text>
+  <rect x="195" y="900" width="16" height="16" rx="4" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="219" y="913" class="tiny">backend_net (internal: true)</text>
+  <rect x="430" y="900" width="16" height="16" rx="4" fill="#fce7f3" stroke="#db2777"/>
+  <text x="454" y="913" class="tiny">admin_net (internal: true)</text>
+  <rect x="660" y="900" width="16" height="16" rx="4" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="684" y="913" class="tiny">monitoring_net</text>
+  <text x="48" y="955" class="tiny">Cổng host hiển thị theo giá trị mặc định trong docker-compose.yml; có thể tùy chỉnh qua biến môi trường.</text>
+</svg>

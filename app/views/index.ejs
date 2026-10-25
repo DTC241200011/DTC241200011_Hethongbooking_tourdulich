@@ -1,0 +1,221 @@
+<!-- Hero Section -->
+<section class="hero-section text-white py-5 position-relative">
+  <div class="container py-4">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
+          <i class="fa-solid fa-fire me-1"></i> Khuyến mãi Mùa Du Lịch 2024
+        </span>
+        <h1 class="display-4 fw-bold mb-3">Khám Phá Việt Nam & Thế Giới Trọn Vẹn Cùng VietTour</h1>
+        <p class="lead text-white-50 mb-4">
+          Hàng trăm tour du lịch trọn gói từ Bắc vào Nam với lịch trình hấp dẫn, chất lượng 5 sao và bảo hiểm toàn diện. Đặt tour nhanh chóng chỉ trong 60 giây!
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="/tours" class="btn btn-warning btn-lg px-4 fw-bold">
+            <i class="fa-solid fa-compass me-2"></i>Xem Tất Cả Tour
+          </a>
+          <a href="/bookings/lookup" class="btn btn-outline-light btn-lg px-4">
+            <i class="fa-solid fa-ticket me-2"></i>Tra Cứu Vé Đã Đặt
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 mt-4 mt-lg-0">
+        <!-- Search Card -->
+        <div class="card shadow-lg border-0 rounded-4 p-4 text-dark bg-white">
+          <h4 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-magnifying-glass me-2"></i>Tìm Tour Nhanh</h4>
+          <form action="/tours" method="GET">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-muted">Từ khóa tìm kiếm</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Tên tour, vị trí, danh lam..." value="<%= filters.search || '' %>">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-muted">Điểm đến mong muốn</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                <select name="destination" class="form-select">
+                  <option value="">Tất cả điểm đến</option>
+                  <option value="Đà Nẵng" <%= filters.destination === 'Đà Nẵng' ? 'selected' : '' %>>Đà Nẵng - Bà Nà</option>
+                  <option value="Phú Quốc" <%= filters.destination === 'Phú Quốc' ? 'selected' : '' %>>Phú Quốc - Đảo Ngọc</option>
+                  <option value="Hạ Long" <%= filters.destination === 'Hạ Long' ? 'selected' : '' %>>Vịnh Hạ Long</option>
+                  <option value="Sa Pa" <%= filters.destination === 'Sa Pa' ? 'selected' : '' %>>Sa Pa - Fansipan</option>
+                  <option value="Hà Giang" <%= filters.destination === 'Hà Giang' ? 'selected' : '' %>>Hà Giang - Cao Nguyên Đá</option>
+                  <option value="Đà Lạt" <%= filters.destination === 'Đà Lạt' ? 'selected' : '' %>>Đà Lạt - Thành phố ngàn hoa</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-semibold text-muted">Ngân sách tối đa (VNĐ)</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-tag text-muted"></i></span>
+                <select name="maxPrice" class="form-select">
+                  <option value="">Không giới hạn</option>
+                  <option value="3000000" <%= filters.maxPrice === '3000000' ? 'selected' : '' %>>Dưới 3.000.000 đ</option>
+                  <option value="6000000" <%= filters.maxPrice === '6000000' ? 'selected' : '' %>>Dưới 6.000.000 đ</option>
+                  <option value="10000000" <%= filters.maxPrice === '10000000' ? 'selected' : '' %>>Dưới 10.000.000 đ</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+              <i class="fa-solid fa-filter me-2"></i>Tìm Kiếm Tour Ngay
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Highlight -->
+<section class="py-4 bg-light border-bottom">
+  <div class="container">
+    <div class="row g-3 text-center">
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 shadow-sm border">
+          <div class="text-primary fs-3 fw-bold"><%= stats.activeTours %>+</div>
+          <div class="text-muted small">Tour Đang Khởi Hành</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 shadow-sm border">
+          <div class="text-success fs-3 fw-bold"><%= stats.totalBookings %>+</div>
+          <div class="text-muted small">Lượt Đặt Thành Công</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 shadow-sm border">
+          <div class="text-warning fs-3 fw-bold">100%</div>
+          <div class="text-muted small">Đảm Bảo Khởi Hành</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 shadow-sm border">
+          <div class="text-danger fs-3 fw-bold">24/7</div>
+          <div class="text-muted small">Hỗ Trợ Khách Hàng</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Tours Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <span class="text-primary fw-bold text-uppercase small">Điểm Đến Hấp Dẫn</span>
+        <h2 class="fw-bold mb-0">Tour Du Lịch Nổi Bật Nhất</h2>
+      </div>
+      <a href="/tours" class="btn btn-outline-primary">
+        Xem tất cả <i class="fa-solid fa-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      <% if (tours && tours.length > 0) { %>
+        <% tours.slice(0, 6).forEach(tour => { %>
+          <div class="col-lg-4 col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden tour-card">
+              <div class="position-relative">
+                <img src="<%= tour.image_url %>" class="card-img-top tour-img" alt="<%= tour.title %>" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop'">
+                <span class="badge bg-primary position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill shadow-sm">
+                  <i class="fa-solid fa-location-dot me-1"></i> <%= tour.destination %>
+                </span>
+                <% if (tour.featured) { %>
+                  <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm">
+                    <i class="fa-solid fa-star me-1"></i> Nổi Bật
+                  </span>
+                <% } %>
+              </div>
+              <div class="card-body d-flex flex-column p-4">
+                <h5 class="card-title fw-bold text-dark mb-2">
+                  <a href="/tours/<%= tour.id %>" class="text-decoration-none text-dark hover-primary">
+                    <%= tour.title %>
+                  </a>
+                </h5>
+                <p class="text-muted small flex-grow-1 tour-desc-clamp mb-3">
+                  <%= tour.description %>
+                </p>
+
+                <div class="tour-features d-flex justify-content-between text-muted small py-2 border-top border-bottom mb-3">
+                  <span><i class="fa-regular fa-clock me-1 text-primary"></i> <%= tour.duration %></span>
+                  <span><i class="fa-solid fa-bus me-1 text-primary"></i> <%= tour.transport || 'Ô tô / Máy bay' %></span>
+                  <span><i class="fa-solid fa-users me-1 text-primary"></i> Tối đa <%= tour.max_participants %> khách</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                  <div>
+                    <span class="text-muted small d-block">Giá trọn gói từ</span>
+                    <span class="text-danger fw-bold fs-5"><%= formatCurrency(tour.price) %></span>
+                  </div>
+                  <a href="/tours/<%= tour.id %>" class="btn btn-primary px-3 rounded-pill">
+                    Đặt Ngay <i class="fa-solid fa-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="col-12 text-center py-5">
+          <i class="fa-solid fa-umbrella-beach text-muted display-4 mb-3"></i>
+          <h4>Chưa tìm thấy tour du lịch phù hợp</h4>
+          <p class="text-muted">Vui lòng thử tìm kiếm lại với tiêu chí khác hoặc xem lại tất cả tour.</p>
+          <a href="/" class="btn btn-primary">Xóa Bộ Lọc</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="text-primary fw-bold text-uppercase small">Cam Kết Dịch Vụ</span>
+      <h2 class="fw-bold">Tại Sao Nên Đặt Tour Cùng VietTour?</h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-3 text-center">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="feature-icon bg-primary-subtle text-primary rounded-circle mx-auto mb-3">
+            <i class="fa-solid fa-shield-halved fs-3"></i>
+          </div>
+          <h5 class="fw-bold">Bảo Hiểm Toàn Diện</h5>
+          <p class="text-muted small mb-0">Mọi hành trình đều được bảo hiểm du lịch quốc tế, đảm bảo an tâm tuyệt đối.</p>
+        </div>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="feature-icon bg-success-subtle text-success rounded-circle mx-auto mb-3">
+            <i class="fa-solid fa-tags fs-3"></i>
+          </div>
+          <h5 class="fw-bold">Giá Cả Cạnh Tranh</h5>
+          <p class="text-muted small mb-0">Cam kết giá tốt nhất thị trường, không phí ẩn phát sinh trong chuyến đi.</p>
+        </div>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="feature-icon bg-warning-subtle text-warning rounded-circle mx-auto mb-3">
+            <i class="fa-solid fa-headset fs-3"></i>
+          </div>
+          <h5 class="fw-bold">Hỗ Trợ 24/7</h5>
+          <p class="text-muted small mb-0">Đội ngũ tư vấn viên nhiệt tình, sẵn sàng giải đáp và xử lý thắc mắc mọi lúc.</p>
+        </div>
+      </div>
+      <div class="col-md-3 text-center">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <div class="feature-icon bg-danger-subtle text-danger rounded-circle mx-auto mb-3">
+            <i class="fa-solid fa-thumbs-up fs-3"></i>
+          </div>
+          <h5 class="fw-bold">Chất Lượng Đẳng Cấp</h5>
+          <p class="text-muted small mb-0">Khách sạn chuẩn 3-5 sao, xe du lịch đời mới và hướng dẫn viên kinh nghiệm.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

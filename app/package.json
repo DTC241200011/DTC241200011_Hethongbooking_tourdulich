@@ -1,0 +1,26 @@
+{
+  "name": "tour-booking-system",
+  "version": "1.0.0",
+  "description": "He thong Dat Tour Du Lich - De 20 - DTC241200011 Phi Duc Phi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "ejs": "^3.1.10",
+    "express-ejs-layouts": "^2.5.1",
+    "prom-client": "^15.1.2",
+    "winston": "^3.13.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "keywords": ["tour", "booking", "travel", "docker", "prometheus", "grafana", "loki"],
+  "author": "Phi Duc Phi - DTC241200011",
+  "license": "MIT"
+}
+

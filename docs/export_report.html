@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>BÁO CÁO BÀI TẬP LỚN - ĐỀ 20: HỆ THỐNG BOOKING TOUR DU LỊCH - PHÍ ĐỨC PHI DTC241200011</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 20mm 20mm 25mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 13pt;
+      line-height: 1.5;
+      color: #000;
+      background: #e2e8f0;
+      margin: 0;
+      padding: 20px 0;
+    }
+
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #1e293b;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .btn-print {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-print:hover { background: #0369a1; }
+
+    .page-container {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: white;
+      padding: 20mm 20mm 20mm 25mm;
+      box-sizing: border-box;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .no-print-bar { display: none !important; }
+      .page-container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+      }
+      .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+    }
+
+    /* Cover Page Styling */
+    .cover-border {
+      border: 3px double #000;
+      padding: 25px 20px;
+      min-height: 245mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .cover-header h3 { margin: 0; font-size: 15pt; text-transform: uppercase; font-weight: bold; }
+    .cover-header h4 { margin: 5px 0 0; font-size: 13pt; text-transform: uppercase; font-weight: bold; }
+    .cover-divider { width: 150px; height: 1px; background: #000; margin: 15px auto; }
+
+    .cover-title-box { margin: 40px 0; }
+    .cover-title-box .report-type { font-size: 16pt; font-weight: bold; text-transform: uppercase; color: #1e3a8a; }
+    .cover-title-box .subject-name { font-size: 14pt; font-weight: bold; margin-top: 5px; }
+    .cover-title-box .topic-label { font-size: 14pt; font-weight: bold; margin-top: 25px; text-transform: uppercase; }
+    .cover-title-box .topic-title { font-size: 18pt; font-weight: bold; text-transform: uppercase; color: #b91c1c; margin-top: 10px; line-height: 1.3; }
+
+    .cover-meta {
+      text-align: left;
+      margin: 40px auto 20px 40px;
+      font-size: 13pt;
+      line-height: 1.8;
+    }
+
+    .cover-footer { font-size: 13pt; font-weight: bold; }
+
+    /* Typography inside content */
+    h1.chapter-title {
+      font-size: 16pt;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #0f172a;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 6px;
+      margin-top: 25px;
+      margin-bottom: 18px;
+    }
+
+    h2.section-title {
+      font-size: 14pt;
+      font-weight: bold;
+      color: #1e293b;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    h3.sub-title {
+      font-size: 13pt;
+      font-weight: bold;
+      font-style: italic;
+      color: #334155;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    p { text-align: justify; margin: 8px 0; text-indent: 1cm; }
+    p.no-indent { text-indent: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 11pt;
+    }
+
+    th, td {
+      border: 1px solid #334155;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .table-caption {
+      font-size: 11pt;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+
+    pre, code {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10.5pt;
+    }
+
+    pre {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      border-radius: 4px;
+      overflow-x: auto;
+      line-height: 1.4;
+      text-indent: 0;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 10pt;
+      font-weight: bold;
+      border-radius: 12px;
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .diagram-box {
+      border: 1px solid #94a3b8;
+      background: #f8fafc;
+      padding: 15px;
+      margin: 15px 0;
+      text-align: center;
+      font-family: monospace;
+      white-space: pre;
+      font-size: 9.5pt;
+      line-height: 1.25;
+      overflow-x: auto;
+      text-indent: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar for Viewing & Printing -->
+  <div class="no-print-bar">
+    <div>
+      <strong>Báo Cáo Tổng Hợp Đề 20 - DTC241200011 Phí Đức Phi</strong> 
+      <span style="opacity: 0.8; margin-left: 10px;">| Định dạng chuẩn A4 (12+ trang hoàn chỉnh)</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      🖨️ IN BÁO CÁO / XUẤT FILE PDF (Ctrl + P)
+    </button>
+  </div>
+
+  <div class="page-container">
+
+    <!-- ========================================== -->
+    <!-- TRANG BÌA CHUẨN ĐỒ ÁN / THỰC TẬP           -->
+    <!-- ========================================== -->
+    <div class="cover-border">
+      <div class="cover-header">
+        <h3>BỘ GIÁO DỤC VÀ ĐÀO TẠO</h3>
+        <h4>TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG</h4>
+        <div class="cover-divider"></div>
+        <h4>KHOA CÔNG NGHỆ THÔNG TIN</h4>
+      </div>
+
+      <div class="cover-title-box">
+        <div class="report-type">BÁO CÁO BÀI TẬP LỚN / ĐỒ ÁN CHUYÊN NGÀNH</div>
+        <div class="subject-name">HỌC PHẦN: TRIỂN KHAI HỆ THỐNG VÀ DEVOPS</div>
+        
+        <div class="topic-label">ĐỀ TÀI SỐ 20:</div>
+        <div class="topic-title">
+          HỆ THỐNG BOOKING TOUR / DU LỊCH TRÊN NỀN TẢNG DOCKER COMPOSE, GIÁM SÁT PROMETHEUS - GRAFANA, GHI LOG LOKI VÀ BẢO MẬT HARDENING
+        </div>
+      </div>
+
+      <div class="cover-meta">
+        <div><strong>Giảng viên hướng dẫn:</strong> Giảng viên Bộ môn DevOps & Điện toán đám mây</div>
+        <div><strong>Sinh viên thực hiện:</strong> Phí Đức Phi</div>
+        <div><strong>Mã số sinh viên:</strong> <strong>DTC241200011</strong></div>
+        <div><strong>Lớp chuyên ngành:</strong> Công nghệ Thông tin / Kỹ thuật Phần mềm</div>
+        <div><strong>Khóa đào tạo:</strong> 2021 - 2025</div>
+      </div>
+
+      <div class="cover-footer">
+        HÀ NỘI - NĂM 2024
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TRANG 2: LỜI CAM ĐOAN & MỤC LỤC            -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title" style="text-align: center;">LỜI CAM ĐOAN</h1>
+    <p>Tôi xin cam đoan rằng toàn bộ nội dung, cấu hình hệ thống container hóa và mã nguồn trong báo cáo bài tập lớn này là kết quả nghiên cứu, triển khai thực tế của bản thân tôi dưới sự hướng dẫn của Giảng viên phụ trách học phần. Toàn bộ các thông tin tham khảo, tài liệu mở đều được trích dẫn nguồn gốc minh bạch và rõ ràng.</p>
+    <p>Mọi kết quả đo lường, cấu hình Nginx SSL, hệ thống giám sát Prometheus + Grafana, nhật ký tập trung Loki và các biện pháp bảo mật Hardening được thể hiện trung thực và có khả năng tái tạo 100% trên môi trường Docker Compose tiêu chuẩn.</p>
+
+    <div style="float: right; text-align: center; margin-top: 20px; width: 250px;">
+      <em>Hà Nội, ngày 18 tháng 10 năm 2024</em><br>
+      <strong>Sinh viên thực hiện</strong><br><br><br><br>
+      <strong>Phí Đức Phi</strong><br>
+      <em>MSV: DTC241200011</em>
+    </div>
+    <div style="clear: both;"></div>
+
+    <h1 class="chapter-title" style="margin-top: 40px;">MỤC LỤC TỔNG QUAN</h1>
+    <p class="no-indent" style="line-height: 1.8;">
+      <strong>CHƯƠNG 1: TỔNG QUAN HỆ THỐNG VÀ KIẾN TRÚC TỔNG THỂ</strong> ......................... Trang 3<br>
+      <strong>CHƯƠNG 2: TRIỂN KHAI WEBSITE VÀ CƠ SỞ DỮ LIỆU POSTGRESQL + PGADMIN</strong> ....... Trang 5<br>
+      <strong>CHƯƠNG 3: CẤU HÌNH NGINX REVERSE PROXY, HTTPS VÀ SECURITY HEADERS</strong> ...... Trang 7<br>
+      <strong>CHƯƠNG 4: HỆ THỐNG GIÁM SÁT TOÀN DIỆN PROMETHEUS VÀ GRAFANA</strong> ............. Trang 9<br>
+      <strong>CHƯƠNG 5: HỆ THỐNG GHI LOG TẬP TRUNG LOKI, PROMTAIL VÀ TRUY VẤN LOGQL</strong> .... Trang 11<br>
+      <strong>CHƯƠNG 6: CÁC BIỆN PHÁP BẢO MẬT NÂNG CAO (SECURITY HARDENING)</strong> .......... Trang 13<br>
+      <strong>CHƯƠNG 7: KỊCH BẢN KIỂM THỬ, ĐÁNH GIÁ VÀ HƯỚNG DẪN VẬN HÀNH</strong> ............ Trang 14<br>
+      <strong>KẾT LUẬN VÀ TÀI LIỆU THAM KHẢO</strong> ................................................................. Trang 15
+    </p>
+
+    <!-- ========================================== -->
+    <!-- TRANG 3: CHƯƠNG 1                           -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 1: TỔNG QUAN HỆ THỐNG VÀ KIẾN TRÚC TỔNG THỂ</h1>
+    
+    <h2 class="section-title">1.1 Khái quát về Đề tài số 20 - Hệ thống Booking Tour Du lịch</h2>
+    <p>Hệ thống <strong>VietTour</strong> là nền tảng thương mại điện tử chuyên biệt phục vụ ngành du lịch và lữ hành. Mục tiêu chính của dự án là xây dựng một hệ thống hiện đại, cho phép khách hàng tra cứu các chương trình tour trong nước, xem lịch trình chi tiết từng ngày, đăng ký đặt tour trực tuyến và tra cứu đơn vé. Đồng thời, hệ thống cung cấp giao diện quản trị giúp ban điều hành theo dõi số liệu kinh doanh, quản lý thông tin khách hàng và cập nhật trạng thái đơn vé.</p>
+    
+    <h2 class="section-title">1.2 Kiến trúc Multi-container với Docker Compose</h2>
+    <p>Hệ thống được thiết kế theo tư tưởng kiến trúc Microservices phân tách độc lập, bao gồm 11 dịch vụ container điều phối bằng Docker Compose v2:</p>
+
+    <div class="diagram-box">
++-----------------------------------------------------------------------------------------+
+|                                    NGƯỜI DÙNG / BROWSER                                 |
++-----------------------------------------------------------------------------------------+
+                                 | (Cổng 80 -> Tự động chuyển hướng 443 HTTPS)
+                                 v
++-----------------------------------------------------------------------------------------+
+|                         CONTAINER: NGINX REVERSE PROXY                                  |
+|  - SSL Termination (cert.pem / key.pem)     - Rate Limiting (20 req/s)                 |
+|  - Security Headers (OWASP)                  - Stub Status (/nginx_status)              |
++-----------------------------------------------------------------------------------------+
+           |                                                 |
+           | proxy_pass (frontend_net)                       | proxy_pass /pgadmin/
+           v                                                 v
++---------------------------------------+       +-----------------------------------------+
+|     CONTAINER: WEB APPLICATION        |       |       CONTAINER: PGADMIN 4              |
+|  - Node.js 20 Express (Non-root node) |       |  - Quản trị DB trực quan (Cổng 5050)   |
+|  - EJS Views + Bootstrap 5 UI         |       |  - Tự động nạp servers.json             |
+|  - OpenMetrics endpoint: /metrics     |       +-----------------------------------------+
++---------------------------------------+                            |
+           | (backend_net)                                           | (admin_net)
+           +--------------------+------------------------------------+
+                                |
+                                v
++-----------------------------------------------------------------------------------------+
+|                   CONTAINER: POSTGRESQL 16 (backend_net - internal: true)               |
+|  - Mạng cô lập hoàn toàn không lộ cổng ra Internet                                      |
+|  - Dữ liệu lưu tại volume postgres_data                                                 |
++-----------------------------------------------------------------------------------------+
+                                ^
+                                | Scrape DB stats
++-----------------------------------------------------------------------------------------+
+| TẦNG GIÁM SÁT & LOGGING (monitoring_net)                                                |
+|  - Exporters: postgres-exporter, nginx-exporter, cAdvisor                               |
+|  - Prometheus Server: Thu thập số liệu định kỳ mỗi 10 giây                              |
+|  - Promtail: Đọc file log Nginx JSON & Docker container stdout                          |
+|  - Loki: Lưu trữ chỉ mục log                                                            |
+|  - Grafana Dashboard: Trực quan hóa toàn diện số liệu & nhật ký tại cổng 3001          |
++-----------------------------------------------------------------------------------------+
+    </div>
+    <div class="table-caption">Hình 1.1: Sơ đồ kiến trúc tổng thể các Container trong hệ thống VietTour</div>
+
+    <h2 class="section-title">1.3 Phân bổ cổng dịch vụ và mạng nội bộ</h2>
+    <p>Toàn bộ 11 container được phân phối vào 4 phân vùng mạng ảo riêng biệt nhằm đảm bảo nguyên tắc cô lập bảo mật (Network Isolation):</p>
+    
+    <div class="table-caption">Bảng 1.1: Danh mục dịch vụ, container và phân bổ mạng</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Dịch Vụ</th>
+          <th>Tên Container</th>
+          <th>Cổng Mở Host</th>
+          <th>Mạng Nội Bộ</th>
+          <th>Ghi Chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Reverse Proxy</strong></td>
+          <td><code>tour_nginx_proxy</code></td>
+          <td>80, 443</td>
+          <td>frontend_net, monitoring_net</td>
+          <td>Điểm tiếp nhận lưu lượng duy nhất</td>
+        </tr>
+        <tr>
+          <td><strong>Web App</strong></td>
+          <td><code>tour_web_app</code></td>
+          <td>Không mở</td>
+          <td>frontend_net, backend_net, monitoring_net</td>
+          <td>Node.js Express + EJS (Non-root)</td>
+        </tr>
+        <tr>
+          <td><strong>PostgreSQL</strong></td>
+          <td><code>tour_postgres</code></td>
+          <td>Không mở</td>
+          <td>backend_net, admin_net</td>
+          <td>Cô lập hoàn toàn (internal: true)</td>
+        </tr>
+        <tr>
+          <td><strong>pgAdmin 4</strong></td>
+          <td><code>tour_pgadmin</code></td>
+          <td>5050</td>
+          <td>frontend_net, admin_net</td>
+          <td>Web quản trị DB (Preload server)</td>
+        </tr>
+        <tr>
+          <td><strong>Prometheus</strong></td>
+          <td><code>tour_prometheus</code></td>
+          <td>9090</td>
+          <td>monitoring_net</td>
+          <td>Máy chủ đo lường chuỗi thời gian</td>
+        </tr>
+        <tr>
+          <td><strong>Grafana</strong></td>
+          <td><code>tour_grafana</code></td>
+          <td>3001</td>
+          <td>frontend_net, monitoring_net</td>
+          <td>Bảng điều khiển trực quan hóa</td>
+        </tr>
+        <tr>
+          <td><strong>Loki</strong></td>
+          <td><code>tour_loki</code></td>
+          <td>3100</td>
+          <td>monitoring_net</td>
+          <td>Kho lưu trữ log tập trung</td>
+        </tr>
+        <tr>
+          <td><strong>Promtail</strong></td>
+          <td><code>tour_promtail</code></td>
+          <td>Không mở</td>
+          <td>monitoring_net</td>
+          <td>Thu thập log Docker & Nginx</td>
+        </tr>
+        <tr>
+          <td><strong>cAdvisor</strong></td>
+          <td><code>tour_cadvisor</code></td>
+          <td>Không mở</td>
+          <td>monitoring_net</td>
+          <td>Giám sát tài nguyên container</td>
+        </tr>
+        <tr>
+          <td><strong>Postgres Exp.</strong></td>
+          <td><code>tour_postgres_exporter</code></td>
+          <td>Không mở</td>
+          <td>backend_net, monitoring_net</td>
+          <td>Scrape số liệu kết nối/giao dịch DB</td>
+        </tr>
+        <tr>
+          <td><strong>Nginx Exp.</strong></td>
+          <td><code>tour_nginx_exporter</code></td>
+          <td>Không mở</td>
+          <td>frontend_net, monitoring_net</td>
+          <td>Scrape số liệu stub_status Nginx</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ========================================== -->
+    <!-- TRANG 4: CHƯƠNG 2                           -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 2: TRIỂN KHAI WEBSITE VÀ CƠ SỞ DỮ LIỆU POSTGRESQL + PGADMIN</h1>
+
+    <h2 class="section-title">2.1 Cấu trúc mã nguồn ứng dụng Web Node.js Express</h2>
+    <p>Ứng dụng được thiết kế theo mô hình MVC (Model-View-Controller) tinh gọn, sử dụng Node.js 20 LTS kết hợp Express framework. Toàn bộ mã nguồn được tổ chức chặt chẽ trong thư mục <code>app/</code>:</p>
+    <ul>
+      <li><code>server.js</code>: Khởi động máy chủ web, đăng ký middleware xử lý request, middleware ghi log Winston, middleware sinh số liệu đo lường <code>prom-client</code> và định tuyến các trang.</li>
+      <li><code>db.js</code>: Tạo kết nối PostgreSQL Pool với cơ chế tự phục hồi kết nối (Auto Reconnect), tích hợp ghi nhận thời gian thực thi câu truy vấn SQL vào Prometheus Histogram.</li>
+      <li><code>logger.js</code>: Cấu hình thư viện Winston định dạng JSON xuất ra <code>stdout</code> để Promtail dễ dàng lập chỉ mục.</li>
+      <li><code>metrics.js</code>: Đăng ký các bộ đếm và thước đo nghiệp vụ phục vụ cho Prometheus.</li>
+    </ul>
+
+    <h2 class="section-title">2.2 Thiết kế cơ sở dữ liệu quan hệ PostgreSQL</h2>
+    <p>Cơ sở dữ liệu <code>tour_booking_db</code> bao gồm 3 bảng thực thể quan hệ chặt chẽ:</p>
+    
+    <div class="table-caption">Bảng 2.1: Chi tiết bảng danh mục Tour (<code>tours</code>)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Thuộc Tính</th>
+          <th>Kiểu Dữ Liệu</th>
+          <th>Ràng Buộc</th>
+          <th>Ý Nghĩa Nghiệp Vụ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>SERIAL</td><td>PRIMARY KEY</td><td>Khóa chính định danh tour</td></tr>
+        <tr><td><code>title</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Tên đầy đủ của chuyến đi</td></tr>
+        <tr><td><code>destination</code></td><td>VARCHAR(100)</td><td>NOT NULL, INDEX</td><td>Địa phương đến (Đà Nẵng, Phú Quốc...)</td></tr>
+        <tr><td><code>duration</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Thời lượng tour (3N2Đ, 4N3Đ)</td></tr>
+        <tr><td><code>price</code></td><td>NUMERIC(12,2)</td><td>NOT NULL</td><td>Giá vé chuẩn cho 1 người lớn</td></tr>
+        <tr><td><code>max_participants</code></td><td>INT</td><td>DEFAULT 30</td><td>Số lượng chỗ ngồi tối đa</td></tr>
+        <tr><td><code>image_url</code></td><td>TEXT</td><td></td><td>Đường dẫn ảnh bìa phong cảnh</td></tr>
+        <tr><td><code>transport</code></td><td>VARCHAR(100)</td><td></td><td>Phương tiện chính (Máy bay, Ô tô VIP)</td></tr>
+        <tr><td><code>featured</code></td><td>BOOLEAN</td><td>DEFAULT false</td><td>Đánh dấu tour tiêu biểu trang chủ</td></tr>
+      </tbody>
+    </table>
+
+    <div class="table-caption">Bảng 2.2: Chi tiết bảng đơn đặt vé (<code>bookings</code>)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Thuộc Tính</th>
+          <th>Kiểu Dữ Liệu</th>
+          <th>Ràng Buộc</th>
+          <th>Ý Nghĩa Nghiệp Vụ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>booking_code</code></td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td><td>Mã đơn đặt tour duy nhất (BK...)</td></tr>
+        <tr><td><code>tour_id</code></td><td>INT</td><td>REFERENCES tours(id)</td><td>Khóa ngoại liên kết tour đã chọn</td></tr>
+        <tr><td><code>customer_name</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Họ tên khách hàng đại diện</td></tr>
+        <tr><td><code>customer_phone</code></td><td>VARCHAR(20)</td><td>NOT NULL</td><td>Số điện thoại liên hệ xác nhận</td></tr>
+        <tr><td><code>departure_date</code></td><td>DATE</td><td>NOT NULL</td><td>Ngày bắt đầu khởi hành</td></tr>
+        <tr><td><code>adults_count</code></td><td>INT</td><td>DEFAULT 1</td><td>Số lượng khách người lớn</td></tr>
+        <tr><td><code>children_count</code></td><td>INT</td><td>DEFAULT 0</td><td>Số lượng khách trẻ em (tính 70% giá)</td></tr>
+        <tr><td><code>total_price</code></td><td>NUMERIC(12,2)</td><td>NOT NULL</td><td>Tổng số tiền khách phải thanh toán</td></tr>
+        <tr><td><code>status</code></td><td>VARCHAR(20)</td><td>DEFAULT 'PENDING'</td><td>Trạng thái (PENDING, CONFIRMED, CANCELLED)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">2.3 Tự động hóa kết nối pgAdmin 4 (Zero-configuration)</h2>
+    <p>Thay vì yêu cầu người dùng phải cấu hình kết nối bằng tay, hệ thống sử dụng tệp <code>pgadmin/servers.json</code> được gắn vào thư mục khởi động của pgAdmin 4. Khi truy cập <code>http://localhost:5050</code>, cây máy chủ cơ sở dữ liệu đã hiển thị sẵn kết nối tới máy chủ <code>postgres</code> trên cổng nội bộ <code>5432</code>, giúp quá trình nghiệm thu diễn ra tức thì và chính xác.</p>
+
+    <!-- ========================================== -->
+    <!-- TRANG 5: CHƯƠNG 3                           -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 3: CẤU HÌNH NGINX REVERSE PROXY, HTTPS VÀ SECURITY HEADERS</h1>
+
+    <h2 class="section-title">3.1 Cơ chế tạo chứng chỉ SSL/TLS tự ký hoàn toàn tự động</h2>
+    <p>Để đáp ứng yêu cầu truyền thông mã hóa an toàn mà không yêu cầu người dùng phải cài đặt OpenSSL thủ công trên máy host, dự án đã đóng gói một quy trình tự động hóa bên trong tệp khởi chạy <code>nginx/entrypoint.sh</code>:</p>
+    <pre><code>if [ ! -f "/etc/nginx/ssl/cert.pem" ] || [ ! -f "/etc/nginx/ssl/key.pem" ]; then
+    echo "[NGINX INIT] Generating self-signed SSL certificate..."
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /etc/nginx/ssl/key.pem \
+        -out /etc/nginx/ssl/cert.pem \
+        -subj "/C=VN/ST=Hanoi/L=Hanoi/O=DTC241200011/OU=IT/CN=localhost"
+    chmod 600 /etc/nginx/ssl/key.pem
+    chmod 644 /etc/nginx/ssl/cert.pem
+fi</code></pre>
+    <p>Nhờ cơ chế này, ngay trong lần chạy đầu tiên bằng <code>docker compose up -d</code>, Nginx đã sẵn sàng phục vụ lưu lượng truy cập qua giao thức HTTPS cổng 443 với giao thức mã hóa TLSv1.2/TLSv1.3 hiện đại.</p>
+
+    <h2 class="section-title">3.2 Thiết lập bộ tiêu đề bảo mật HTTP Security Headers</h2>
+    <p>Toàn bộ phản hồi HTTP trả về từ Nginx đều được nhúng sẵn các tiêu đề an ninh theo khuyến nghị từ tổ chức OWASP:</p>
+    
+    <div class="table-caption">Bảng 3.1: Chi tiết các HTTP Security Headers được áp dụng</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Security Header</th>
+          <th>Giá Trị Thiết Lập</th>
+          <th>Tác Dụng Phòng Thủ An Ninh</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>X-Frame-Options</code></td>
+          <td><code>SAMEORIGIN</code></td>
+          <td>Chống tấn công Clickjacking, không cho phép trang web bị nhúng trong iframe giả mạo từ website lạ.</td>
+        </tr>
+        <tr>
+          <td><code>X-Content-Type-Options</code></td>
+          <td><code>nosniff</code></td>
+          <td>Chống tấn công MIME-sniffing, buộc trình duyệt tuân thủ định dạng tệp máy chủ trả về.</td>
+        </tr>
+        <tr>
+          <td><code>X-XSS-Protection</code></td>
+          <td><code>1; mode=block</code></td>
+          <td>Kích hoạt bộ lọc chống Cross-Site Scripting (XSS) và dừng hiển thị trang nếu phát hiện tiêm mã độc.</td>
+        </tr>
+        <tr>
+          <td><code>Referrer-Policy</code></td>
+          <td><code>strict-origin-when-cross-origin</code></td>
+          <td>Bảo vệ quyền riêng tư người dùng, không rò rỉ URL chứa dữ liệu nhạy cảm ra ngoài.</td>
+        </tr>
+        <tr>
+          <td><code>Strict-Transport-Security</code></td>
+          <td><code>max-age=31536000; includeSubDomains</code></td>
+          <td>Cơ chế HSTS ép buộc trình duyệt ghi nhớ chỉ kết nối bằng HTTPS trong vòng 1 năm.</td>
+        </tr>
+        <tr>
+          <td><code>Server Tokens</code></td>
+          <td><code>server_tokens off;</code></td>
+          <td>Ẩn số hiệu phiên bản Nginx, ngăn chặn kẻ tấn công dò quét lỗ hổng zero-day theo phiên bản.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">3.3 Giới hạn tần suất yêu cầu (Rate Limiting)</h2>
+    <p>Để ngăn ngừa việc bị tấn công tràn ngập yêu cầu (HTTP Flood / DoS), Nginx áp dụng thuật toán Leaky Bucket thông qua chỉ thị:</p>
+    <pre><code>limit_req_zone $binary_remote_addr zone=one:10m rate=20r/s;
+limit_req zone=one burst=40 nodelay;</code></pre>
+    <p>Hệ thống cho phép tối đa 20 request/giây từ một địa chỉ IP khách, với dung lượng đệm tức thời 40 request để tải mượt mà các tài nguyên tĩnh.</p>
+
+    <!-- ========================================== -->
+    <!-- TRANG 6: CHƯƠNG 4                           -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 4: HỆ THỐNG GIÁM SÁT TOÀN DIỆN PROMETHEUS VÀ GRAFANA</h1>
+
+    <h2 class="section-title">4.1 Cấu hình thu thập số liệu đa nguồn của Prometheus</h2>
+    <p>Tệp <code>monitoring/prometheus/prometheus.yml</code> định nghĩa 5 mục tiêu thu thập (Scrape Targets) hoạt động với tần suất quét 10 giây/lần:</p>
+    <ul>
+      <li><strong>Target 1 (Ứng dụng Web):</strong> Đọc trực tiếp từ <code>web-app:3000/metrics</code> để thu thập số lượng request, độ trễ và các chỉ số nghiệp vụ tour du lịch.</li>
+      <li><strong>Target 2 (Nginx Reverse Proxy):</strong> Đọc từ <code>nginx-exporter:9113</code> chuyển hóa số liệu từ trang trạng thái <code>/nginx_status</code> của Nginx.</li>
+      <li><strong>Target 3 (Cơ sở dữ liệu PostgreSQL):</strong> Đọc từ <code>postgres-exporter:9187</code> kết nối nội bộ vào CSDL để thống kê kết nối và tốc độ commit giao dịch.</li>
+      <li><strong>Target 4 (Hạ tầng Container):</strong> Đọc từ <code>cadvisor:8080</code> để đo lường mức độ tiêu thụ CPU, RAM, Network I/O của toàn bộ 11 container.</li>
+      <li><strong>Target 5 (Prometheus Server):</strong> Giám sát chính máy chủ Prometheus để đảm bảo hệ thống đo lường không bị gián đoạn.</li>
+    </ul>
+
+    <h2 class="section-title">4.2 Tự động hóa Bảng điều khiển Grafana Dashboard</h2>
+    <p>Thông qua cơ chế <strong>Grafana Provisioning</strong> (tệp <code>provisioning/dashboards/dashboards.yml</code> và tệp <code>provisioning/datasources/datasources.yml</code>), sinh viên xây dựng sẵn một bảng điều khiển trung tâm hoàn chỉnh mang tên <strong>"VietTour - Tour Booking & Infrastructure Overview"</strong>:</p>
+
+    <div class="table-caption">Bảng 4.1: Các Panel giám sát cốt lõi trên Grafana Dashboard</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Panel Trên Grafana</th>
+          <th>Loại Trực Quan Hóa</th>
+          <th>Câu Lệnh Truy Vấn PromQL / LogQL</th>
+          <th>Mục Đích Giám Sát</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Số Tour Đang Bán</strong></td>
+          <td>Stat Panel</td>
+          <td><code>tour_active_count</code></td>
+          <td>Theo dõi quy mô sản phẩm mở bán</td>
+        </tr>
+        <tr>
+          <td><strong>Tổng Đơn Đặt Tour</strong></td>
+          <td>Stat Panel</td>
+          <td><code>sum(tour_bookings_total)</code></td>
+          <td>Đo lường số lượng đơn đặt thành công</td>
+        </tr>
+        <tr>
+          <td><strong>Tốc Độ Yêu Cầu HTTP</strong></td>
+          <td>Stat Panel (reqps)</td>
+          <td><code>sum(rate(http_requests_total[1m]))</code></td>
+          <td>Lưu lượng truy cập hệ thống thời gian thực</td>
+        </tr>
+        <tr>
+          <td><strong>Độ Trễ Phản Hồi P95</strong></td>
+          <td>Stat Panel (giây)</td>
+          <td><code>histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))</code></td>
+          <td>Giám sát chất lượng trải nghiệm người dùng</td>
+        </tr>
+        <tr>
+          <td><strong>Lưu Lượng Theo HTTP Status</strong></td>
+          <td>Timeseries Line Chart</td>
+          <td><code>sum(rate(http_requests_total[1m])) by (status_code)</code></td>
+          <td>Phát hiện sớm các lỗi 4xx và 5xx</td>
+        </tr>
+        <tr>
+          <td><strong>Độ Trễ Truy Vấn Database</strong></td>
+          <td>Timeseries Line Chart</td>
+          <td><code>rate(db_query_duration_seconds_sum[1m]) / rate(db_query_duration_seconds_count[1m])</code></td>
+          <td>Đo lường thời gian đáp ứng câu lệnh SQL</td>
+        </tr>
+        <tr>
+          <td><strong>Nginx Active Connections</strong></td>
+          <td>Timeseries Line Chart</td>
+          <td><code>nginx_connections_active</code></td>
+          <td>Số lượng kết nối đồng thời qua Reverse Proxy</td>
+        </tr>
+        <tr>
+          <td><strong>Postgres Transactions/s</strong></td>
+          <td>Timeseries Line Chart</td>
+          <td><code>rate(pg_stat_database_xact_commit[1m])</code></td>
+          <td>Hiệu suất xử lý giao dịch cơ sở dữ liệu</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ========================================== -->
+    <!-- TRANG 7: CHƯƠNG 5                           -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 5: HỆ THỐNG GHI LOG TẬP TRUNG LOKI, PROMTAIL VÀ TRUY VẤN LOGQL</h1>
+
+    <h2 class="section-title">5.1 Mô hình thu thập nhật ký phân tán</h2>
+    <p>Thay vì sử dụng các hệ thống lưu trữ log nặng nề như ELK/EFK vốn đòi hỏi dung lượng bộ nhớ từ 4GB đến 8GB RAM, đề tài ứng dụng <strong>Grafana Loki</strong> kết hợp <strong>Promtail Agent</strong>:</p>
+    <ul>
+      <li>Promtail được cấu hình theo dõi file nhật ký Docker container tại đường dẫn <code>/var/lib/docker/containers/*/*-json.log</code> và nhật ký truy cập Nginx tại <code>/var/log/nginx/*.log</code>.</li>
+      <li>Promtail tự động bóc tách các trường dữ liệu JSON, gắn nhãn định danh và đẩy về Loki qua cổng 3100.</li>
+      <li>Toàn bộ dòng nhật ký được nén dạng khối (chunks), giúp giảm thiểu tối đa dung lượng lưu trữ đĩa cứng và tiết kiệm RAM máy chủ.</li>
+    </ul>
+
+    <h2 class="section-title">5.2 Chi tiết 4 câu truy vấn LogQL phục vụ phân tích hệ thống</h2>
+    <p>Người quản trị sử dụng giao diện <strong>Grafana Explore</strong> với nguồn dữ liệu Loki để thực thi các câu truy vấn LogQL chuyên sâu:</p>
+
+    <h3 class="sub-title">Truy vấn 1: Lọc các bản ghi lỗi phát sinh trong hệ thống</h3>
+    <pre><code>{job="docker-logs"} |~ "status\":\\s*[45][0-9]{2}|level\":\\s*\"(error|warn)\""</code></pre>
+    <p><em>Giải thích:</em> Lọc nhanh toàn bộ các dòng log của các container có chứa mã trạng thái lỗi phía máy khách (4xx), lỗi máy chủ (5xx) hoặc chứa cấp độ cảnh báo nguy hiểm trong ứng dụng.</p>
+
+    <h3 class="sub-title">Truy vấn 2: Theo dõi luồng sự kiện đặt tour du lịch mới</h3>
+    <pre><code>{job="docker-logs"} |= "New Tour Booking created"</code></pre>
+    <p><em>Giải thích:</em> Truy vấn chính xác chuỗi ký tự sự kiện khi có khách hàng hoàn tất form đặt vé. Kết quả trả về chứa đầy đủ mã đặt chỗ <code>booking_code</code>, số điện thoại và tổng số tiền thanh toán.</p>
+
+    <h3 class="sub-title">Truy vấn 3: Biểu đồ tốc độ phát sinh nhật ký theo thời gian</h3>
+    <pre><code>rate({job=~"docker-logs|nginx-logs"}[1m])</code></pre>
+    <p><em>Giải thích:</em> Tính toán số lượng dòng log sinh ra trên mỗi giây trong cửa sổ trượt 1 phút, giúp phát hiện đột biến lưu lượng hoặc các vòng lặp lỗi bất thường.</p>
+
+    <h3 class="sub-title">Truy vấn 4: Phân tích log Nginx và lọc các request có độ trễ cao</h3>
+    <pre><code>{job="nginx-logs"} | json | request_time > 0.1</code></pre>
+    <p><em>Giải thích:</em> Sử dụng parser <code>| json</code> để chuyển đổi dòng log truy cập của Nginx thành cấu trúc dữ liệu và lọc ra các yêu cầu mất hơn 100ms xử lý.</p>
+
+    <!-- ========================================== -->
+    <!-- TRANG 8: CHƯƠNG 6 & 7                       -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">CHƯƠNG 6: CÁC BIỆN PHÁP BẢO MẬT NÂNG CAO (SECURITY HARDENING)</h1>
+
+    <h2 class="section-title">6.1 Nguyên tắc đặc quyền tối thiểu (Non-root Containers)</h2>
+    <p>Để ngăn chặn nguy cơ tấn công leo thang vượt rào container (Container Breakout), toàn bộ các container trong hệ thống đều được thiết lập chạy với quyền người dùng thông thường:</p>
+    <ul>
+      <li><code>tour_web_app</code>: Khai báo <code>USER node</code> (UID 1000) trong Dockerfile.</li>
+      <li><code>tour_prometheus</code>: Khai báo <code>user: "nobody"</code> (UID 65534) trong docker-compose.yml.</li>
+      <li><code>tour_grafana</code>: Khai báo <code>user: "472"</code>.</li>
+      <li><code>tour_loki</code>: Khai báo <code>user: "10001"</code>.</li>
+      <li><code>tour_postgres</code>: Chạy mặc định dưới người dùng hệ thống <code>postgres</code> (UID 70).</li>
+    </ul>
+
+    <h2 class="section-title">6.2 Cô lập mạng nội bộ (Internal Network Isolation)</h2>
+    <p>Mạng <code>backend_net</code> và mạng <code>admin_net</code> được kích hoạt thuộc tính <code>internal: true</code> trong tệp Docker Compose. Điều này đồng nghĩa với việc:</p>
+    <ul>
+      <li>Cơ sở dữ liệu PostgreSQL hoàn toàn không có địa chỉ gateway ra Internet. Kẻ tấn công từ ngoài không thể trực tiếp quét cổng 5432.</li>
+      <li>Mã độc (nếu lọt vào DB) không thể mở kết nối ra ngoài để tải thêm công cụ độc hại hoặc rò rỉ dữ liệu (Exfiltration).</li>
+    </ul>
+
+    <h2 class="section-title">6.3 Giới hạn tài nguyên (Resource Limits)</h2>
+    <p>Mọi container đều được áp đặt trần tiêu thụ tài nguyên phần cứng (CPU và Memory), ví dụ:</p>
+    <pre><code>deploy:
+  resources:
+    limits:
+      cpus: '0.50'
+      memory: 384M
+    reservations:
+      memory: 128M</code></pre>
+    <p>Giải pháp này triệt tiêu nguy cơ một container gặp sự cố rò rỉ bộ nhớ làm cạn kiệt tài nguyên của toàn bộ máy chủ vật lý.</p>
+
+    <h1 class="chapter-title" style="margin-top: 30px;">CHƯƠNG 7: KỊCH BẢN KIỂM THỬ VÀ ĐÁNH GIÁ THỰC TẾ</h1>
+
+    <div class="table-caption">Bảng 7.1: Bảng tổng kết kết quả kiểm thử hệ thống</div>
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Kịch Bản Kiểm Thử</th>
+          <th>Kết Quả Mong Đợi</th>
+          <th>Kết Quả Thực Tế Đạt Được</th>
+          <th>Đánh Giá</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Truy cập <code>http://localhost</code></td>
+          <td>Tự động chuyển hướng HTTP 301 sang <code>https://localhost</code></td>
+          <td>Chuyển hướng thành công sang HTTPS với SSL tự ký</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Kiểm tra Security Headers</td>
+          <td>Có đủ X-Frame-Options, XSS, nosniff, HSTS, CSP</td>
+          <td>Kiểm tra qua curl/headers xác nhận đầy đủ 100%</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Đặt tour du lịch mới</td>
+          <td>Tính giá tự động, sinh mã đơn BK..., lưu vào DB</td>
+          <td>Tạo đơn thành công, chuyển sang trang xác nhận</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Tra cứu đơn bằng mã</td>
+          <td>Hiển thị đúng thông tin khách và trạng thái vé</td>
+          <td>Tìm kiếm chính xác đơn hàng trong CSDL</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Duyệt đơn tại trang Admin</td>
+          <td>Đổi trạng thái đơn qua AJAX API, cập nhật tức thì</td>
+          <td>Cập nhật thành công không cần tải lại trang</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Kiểm tra Prometheus Targets</td>
+          <td>Cả 5 mục tiêu đều hiển thị trạng thái <code>UP</code></td>
+          <td>Tất cả 5 Scrape jobs đều xanh và cập nhật liên tục</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Mở Grafana Dashboard</td>
+          <td>Hiển thị đầy đủ biểu đồ Web, DB, Nginx, Containers</td>
+          <td>Dashboard tự động nạp sẵn (Provisioning) đẹp mắt</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Truy vấn LogQL trên Loki</td>
+          <td>Lọc chính xác các sự kiện lỗi và đơn hàng mới</td>
+          <td>Truy vấn thành công 4 câu LogQL thời gian thực</td>
+          <td><span class="badge-pill">ĐẠT (PASS)</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ========================================== -->
+    <!-- TRANG 9: KẾT LUẬN & TÀI LIỆU THAM KHẢO      -->
+    <!-- ========================================== -->
+    <div class="page-break"></div>
+
+    <h1 class="chapter-title">KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN</h1>
+
+    <h2 class="section-title">1. Kết luận đánh giá đồ án</h2>
+    <p>Sau thời gian nghiên cứu và triển khai nghiêm túc, đề tài <strong>"Hệ thống Booking Tour / Du lịch" (Đề 20)</strong> do sinh viên <strong>Phí Đức Phi - MSV: DTC241200011</strong> thực hiện đã hoàn thành toàn diện, đáp ứng đầy đủ và vượt mức các chỉ tiêu kỹ thuật được giao trong đề bài:</p>
+    <ol>
+      <li><strong>Mã nguồn & Git:</strong> Được quản lý bài bản với 3 Commit rõ ràng tương ứng với từng giai đoạn chức năng (Commit 1: Web + DB + Proxy, Commit 2: Prometheus + Grafana, Commit 3: Loki + LogQL + Hardening) và tài liệu README hướng dẫn trực quan.</li>
+      <li><strong>Ứng dụng & Dữ liệu:</strong> Website hoàn chỉnh, giao diện đặt tour thông minh, cơ sở dữ liệu PostgreSQL chuẩn hóa và pgAdmin 4 tự động phát hiện máy chủ kết nối.</li>
+      <li><strong>Cổng giao tiếp an toàn:</strong> Nginx Reverse Proxy xử lý mã hóa HTTPS tự ký tự động sinh, hỗ trợ trọn bộ HTTP Security Headers và kiểm soát tần suất truy cập.</li>
+      <li><strong>Giám sát số liệu:</strong> Tích hợp Prometheus và Grafana với Dashboard tự động nạp, theo dõi đa chiều từ cấp ứng dụng, cơ sở dữ liệu tới tài nguyên phần cứng.</li>
+      <li><strong>Nhật ký tập trung:</strong> Cụm Loki và Promtail thu thập log định dạng JSON hiệu quả và cung cấp 4 câu lệnh truy vấn LogQL thực tế.</li>
+      <li><strong>Bảo mật Hardening:</strong> Thực thi triệt để nguyên tắc Non-root container, cô lập mạng nội bộ <code>internal: true</code> và áp đặt giới hạn tài nguyên CPU/RAM.</li>
+    </ol>
+
+    <h2 class="section-title">2. Hướng phát triển</h2>
+    <p>Trong giai đoạn tiếp theo, hệ thống có thể được nâng cấp mở rộng lên mô hình điều phối Kubernetes (K8s) tích hợp công cụ giám sát Prometheus Operator và cơ chế cảnh báo tự động Alertmanager qua tin nhắn Telegram/Slack khi hệ thống chạm ngưỡng cảnh báo sự cố.</p>
+
+    <h1 class="chapter-title" style="margin-top: 40px;">TÀI LIỆU THAM KHẢO</h1>
+    <ol style="line-height: 1.8;">
+      <li><strong>Docker Documentation:</strong> <em>Docker Compose File Reference v3 & Best Practices for Writing Dockerfiles</em>, https://docs.docker.com/.</li>
+      <li><strong>Nginx Documentation:</strong> <em>Nginx Reverse Proxy Module & SSL Termination Guide</em>, https://nginx.org/en/docs/.</li>
+      <li><strong>OWASP Foundation:</strong> <em>OWASP Secure Headers Project & REST Security Cheat Sheet</em>, https://owasp.org/.</li>
+      <li><strong>Prometheus Authors:</strong> <em>Prometheus Monitoring System & PromQL Query Basics</em>, https://prometheus.io/docs/.</li>
+      <li><strong>Grafana Labs:</strong> <em>Grafana Dashboards Provisioning & Loki LogQL Reference Guide</em>, https://grafana.com/docs/.</li>
+      <li><strong>PostgreSQL Global Development Group:</strong> <em>PostgreSQL 16 Documentation - Concurrency Control and Performance Tuning</em>, https://www.postgresql.org/docs/.</li>
+    </ol>
+  </div>
+
+</body>
+</html>
+

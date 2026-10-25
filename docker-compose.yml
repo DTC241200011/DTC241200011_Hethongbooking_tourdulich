@@ -1,0 +1,361 @@
+# ==============================================================================
+# Docker Compose - Hệ Thống Booking Tour / Du Lịch (Đề 20)
+# Sinh Viên Thực Hiện: Phí Đức Phi - MSV: DTC241200011
+# ==============================================================================
+
+version: "3.8"
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Cơ sở dữ liệu: PostgreSQL 16 (Hardened & Network Isolated)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: tour_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tour_booking_db}
+      POSTGRES_USER: ${POSTGRES_USER:-tour_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-TourSecurePass2024!}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend_net
+      - admin_net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 512M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-tour_admin} -d ${POSTGRES_DB:-tour_booking_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 2. Ứng dụng Web: Node.js Tour Booking Application (Non-Root User)
+  # ----------------------------------------------------------------------------
+  web-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: tour_web_app
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-tour_admin}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-TourSecurePass2024!}
+      DB_NAME: ${POSTGRES_DB:-tour_booking_db}
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - frontend_net
+      - backend_net
+      - monitoring_net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 384M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/healthz",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 3. Công cụ quản lý DB: pgAdmin 4
+  # ----------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:8.5
+    container_name: tour_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@viettour.vn}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-AdminSecurePass2024!}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - frontend_net
+      - admin_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 384M
+
+  # ----------------------------------------------------------------------------
+  # 4. Reverse Proxy: Nginx với SSL tự ký & Security Headers
+  # ----------------------------------------------------------------------------
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: tour_nginx_proxy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - nginx_logs:/var/log/nginx
+      - ssl_certs:/etc/nginx/ssl
+    networks:
+      - frontend_net
+      - monitoring_net
+    depends_on:
+      - web-app
+      - pgadmin
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 256M
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost/health",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # 5. Monitoring Exporters: postgres-exporter & nginx-prometheus-exporter
+  # ----------------------------------------------------------------------------
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: tour_postgres_exporter
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-tour_admin}:${POSTGRES_PASSWORD:-TourSecurePass2024!}@postgres:5432/${POSTGRES_DB:-tour_booking_db}?sslmode=disable"
+    networks:
+      - backend_net
+      - monitoring_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.20"
+          memory: 128M
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: tour_nginx_exporter
+    restart: unless-stopped
+    command:
+      - -nginx.scrape-uri=http://nginx:80/nginx_status
+    networks:
+      - frontend_net
+      - monitoring_net
+    depends_on:
+      - nginx
+    deploy:
+      resources:
+        limits:
+          cpus: "0.20"
+          memory: 128M
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: tour_cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - monitoring_net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.30"
+          memory: 256M
+
+  # ----------------------------------------------------------------------------
+  # 6. Giám sát số liệu: Prometheus Server (Non-root user: nobody)
+  # ----------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: tour_prometheus
+    restart: unless-stopped
+    user: "nobody"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prom_data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    networks:
+      - monitoring_net
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+
+  # ----------------------------------------------------------------------------
+  # 7. Trực quan hóa dữ liệu: Grafana (Provisioned Datasources & Dashboards)
+  # ----------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: tour_grafana
+    restart: unless-stopped
+    user: "472"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-GrafanaAdmin2024!}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    networks:
+      - frontend_net
+      - monitoring_net
+    depends_on:
+      - prometheus
+      - loki
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+
+  # ----------------------------------------------------------------------------
+  # 8. Thu thập và quản lý nhật ký: Loki & Promtail
+  # ----------------------------------------------------------------------------
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: tour_loki
+    restart: unless-stopped
+    user: "10001"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./logging/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    networks:
+      - monitoring_net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: tour_promtail
+    restart: unless-stopped
+    volumes:
+      - ./logging/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - nginx_logs:/var/log/nginx:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitoring_net
+    depends_on:
+      - loki
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256M
+
+# ==============================================================================
+# Networks (Network Hardening & Segregation)
+# ==============================================================================
+networks:
+  # Mạng frontend: Cho Nginx proxy, pgAdmin, Grafana và Web App
+  frontend_net:
+    driver: bridge
+
+  # Mạng backend: Riêng tư, CÔ LẬP KHÔNG CHO PHÉP RA INTERNET (internal: true)
+  # Chỉ Web App, Postgres Exporter và pgAdmin mới được kết nối đến Postgres
+  backend_net:
+    driver: bridge
+    internal: true
+
+  # Mạng quản trị CSDL riêng biệt cho pgAdmin và Postgres
+  admin_net:
+    driver: bridge
+    internal: true
+
+  # Mạng giám sát riêng biệt cho Prometheus, Exporters, Grafana, Loki, Promtail
+  monitoring_net:
+    driver: bridge
+
+# ==============================================================================
+# Persistent Volumes
+# ==============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  nginx_logs:
+    driver: local
+  ssl_certs:
+    driver: local
+  prom_data:
+    driver: local
+  grafana_data:
+    driver: local
+  loki_data:
+    driver: local

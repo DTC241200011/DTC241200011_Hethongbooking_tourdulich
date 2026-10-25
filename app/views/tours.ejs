@@ -1,0 +1,105 @@
+<div class="bg-primary text-white py-4 mb-4">
+  <div class="container">
+    <h2 class="fw-bold mb-1">Danh Sách Tour Du Lịch</h2>
+    <p class="text-white-50 mb-0">Khám phá các tour du lịch đa dạng, phong phú với mức giá ưu đãi nhất</p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row g-4">
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+      <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 80px;">
+        <h5 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-sliders me-2"></i>Bộ Lọc Tìm Kiếm</h5>
+        <form action="/tours" method="GET">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Từ khóa</label>
+            <input type="text" name="search" class="form-control" placeholder="Tên tour..." value="<%= filters.search || '' %>">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Điểm Đến</label>
+            <select name="destination" class="form-select">
+              <option value="">Tất cả điểm đến</option>
+              <option value="Đà Nẵng" <%= filters.destination === 'Đà Nẵng' ? 'selected' : '' %>>Đà Nẵng</option>
+              <option value="Phú Quốc" <%= filters.destination === 'Phú Quốc' ? 'selected' : '' %>>Phú Quốc</option>
+              <option value="Hạ Long" <%= filters.destination === 'Hạ Long' ? 'selected' : '' %>>Hạ Long</option>
+              <option value="Sa Pa" <%= filters.destination === 'Sa Pa' ? 'selected' : '' %>>Sa Pa</option>
+              <option value="Hà Giang" <%= filters.destination === 'Hà Giang' ? 'selected' : '' %>>Hà Giang</option>
+              <option value="Đà Lạt" <%= filters.destination === 'Đà Lạt' ? 'selected' : '' %>>Đà Lạt</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Mức Giá Tối Đa</label>
+            <select name="maxPrice" class="form-select">
+              <option value="">Tất cả mức giá</option>
+              <option value="3000000" <%= filters.maxPrice === '3000000' ? 'selected' : '' %>>Dưới 3.000.000 đ</option>
+              <option value="5000000" <%= filters.maxPrice === '5000000' ? 'selected' : '' %>>Dưới 5.000.000 đ</option>
+              <option value="8000000" <%= filters.maxPrice === '8000000' ? 'selected' : '' %>>Dưới 8.000.000 đ</option>
+              <option value="12000000" <%= filters.maxPrice === '12000000' ? 'selected' : '' %>>Dưới 12.000.000 đ</option>
+            </select>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary fw-bold">Áp Dụng Lọc</button>
+            <a href="/tours" class="btn btn-outline-secondary btn-sm">Đặt lại</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tours List -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Tìm thấy <strong><%= tours.length %></strong> tour du lịch</span>
+      </div>
+
+      <div class="row g-4">
+        <% if (tours && tours.length > 0) { %>
+          <% tours.forEach(tour => { %>
+            <div class="col-md-6">
+              <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden tour-card">
+                <div class="position-relative">
+                  <img src="<%= tour.image_url %>" class="card-img-top tour-img" alt="<%= tour.title %>" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop'">
+                  <span class="badge bg-primary position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill">
+                    <i class="fa-solid fa-location-dot me-1"></i> <%= tour.destination %>
+                  </span>
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                  <h5 class="card-title fw-bold">
+                    <a href="/tours/<%= tour.id %>" class="text-decoration-none text-dark hover-primary">
+                      <%= tour.title %>
+                    </a>
+                  </h5>
+                  <p class="text-muted small tour-desc-clamp mb-3"><%= tour.description %></p>
+
+                  <div class="tour-features d-flex justify-content-between text-muted small py-2 border-top border-bottom mb-3">
+                    <span><i class="fa-regular fa-clock me-1 text-primary"></i> <%= tour.duration %></span>
+                    <span><i class="fa-solid fa-bus me-1 text-primary"></i> <%= tour.transport || 'Ô tô / Máy bay' %></span>
+                    <span><i class="fa-solid fa-users me-1 text-primary"></i> <%= tour.max_participants %> chỗ</span>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <div>
+                      <span class="text-muted small d-block">Giá từ</span>
+                      <span class="text-danger fw-bold fs-5"><%= formatCurrency(tour.price) %></span>
+                    </div>
+                    <a href="/tours/<%= tour.id %>" class="btn btn-primary px-3 rounded-pill">
+                      Xem Chi Tiết <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="col-12 text-center py-5">
+            <i class="fa-solid fa-compass text-muted display-4 mb-3"></i>
+            <h4>Không có tour nào khớp với bộ lọc</h4>
+            <p class="text-muted">Hãy thử chọn địa điểm hoặc điều chỉnh khoảng giá khác.</p>
+            <a href="/tours" class="btn btn-primary">Xem Tất Cả Tour</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
